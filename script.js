@@ -1,4 +1,6 @@
-// Script para SUPER VITRU WORLD
+// Script v1.3 - Foco no Core (Movimento/Visual) - SUPER VITRU WORLD
+
+console.log("Iniciando script v1.3...");
 
 // Variáveis globais
 let telaAtual = 'tela-inicial';
@@ -30,51 +32,58 @@ const telaParabensEl = document.getElementById('tela-parabens');
 let imgPersonagem = new Image();
 let imgMoeda = new Image();
 let imgPlataforma = new Image();
-let sndMoeda = new Audio('assets/sounds/coin.mp3');
-let sndAcerto = new Audio('assets/sounds/acerto.mp3');
-let sndErro = new Audio('assets/sounds/erro.mp3');
-let sndPulo = new Audio('assets/sounds/pulo.mp3');
+// Sons removidos temporariamente para debug
+// let sndMoeda = new Audio('assets/sounds/coin.mp3');
+// let sndAcerto = new Audio('assets/sounds/acerto.mp3');
+// let sndErro = new Audio('assets/sounds/erro.mp3');
+// let sndPulo = new Audio('assets/sounds/pulo.mp3');
 let assetsCarregados = false;
+let erroAssets = false;
 
 function carregarAssets() {
+    console.log("Carregando assets visuais...");
     let promessas = [];
 
     // Imagens
-    imgPersonagem.src = 'assets/images/personagem.png';
+    imgPersonagem.src = 'assets/images/personagem_v2.png';
     promessas.push(new Promise((resolve, reject) => {
-        imgPersonagem.onload = resolve;
-        imgPersonagem.onerror = reject;
+        imgPersonagem.onload = () => { console.log("Personagem carregado."); resolve(); };
+        imgPersonagem.onerror = (e) => { console.error("Erro ao carregar PERSONAGEM:", e); erroAssets = true; reject(e); };
     }));
 
     imgMoeda.src = 'assets/images/moeda.png';
     promessas.push(new Promise((resolve, reject) => {
-        imgMoeda.onload = resolve;
-        imgMoeda.onerror = reject;
+        imgMoeda.onload = () => { console.log("Moeda carregada."); resolve(); };
+        imgMoeda.onerror = (e) => { console.error("Erro ao carregar MOEDA:", e); erroAssets = true; reject(e); };
     }));
 
     imgPlataforma.src = 'assets/images/plataforma.png';
     promessas.push(new Promise((resolve, reject) => {
-        imgPlataforma.onload = resolve;
-        imgPlataforma.onerror = reject;
+        imgPlataforma.onload = () => { console.log("Plataforma carregada."); resolve(); };
+        imgPlataforma.onerror = (e) => { console.error("Erro ao carregar PLATAFORMA:", e); erroAssets = true; reject(e); };
     }));
 
-    // Sons (preload - opcional, mas bom para evitar delays)
-    sndMoeda.load();
-    sndAcerto.load();
-    sndErro.load();
-    sndPulo.load();
-    // Não precisa esperar sons carregarem completamente para iniciar
+    // Sons removidos
+    // sndMoeda.load();
+    // sndAcerto.load();
+    // sndErro.load();
+    // sndPulo.load();
 
     return Promise.all(promessas).then(() => {
-        console.log("Assets visuais carregados!");
+        console.log("Todos os assets visuais carregados!");
         assetsCarregados = true;
         // Ajustar tamanho do jogador baseado na imagem carregada
-        jogador.largura = imgPersonagem.width; // Usando tamanho original
-        jogador.altura = imgPersonagem.height;
+        jogador.largura = imgPersonagem.naturalWidth; // Usando tamanho original
+        jogador.altura = imgPersonagem.naturalHeight;
         console.log(`Dimensões do jogador definidas: ${jogador.largura}x${jogador.altura}`);
+        if (jogador.largura === 0 || jogador.altura === 0) {
+             console.error("ERRO GRAVE: Imagem do personagem carregada com dimensões 0x0!");
+             erroAssets = true;
+        }
     }).catch(err => {
-        console.error("Erro ao carregar assets visuais:", err);
-        alert("Erro ao carregar imagens do jogo. Verifique o console (F12) e tente recarregar.");
+        console.error("Falha crítica no carregamento de assets visuais:", err);
+        erroAssets = true;
+        alert("Erro ao carregar imagens essenciais do jogo. Verifique o console (F12) e tente recarregar.");
     });
 }
 
@@ -88,9 +97,9 @@ const VELOCIDADE_JOGADOR = 5;
 // Estado do Jogo
 let jogador = {
     x: 100,
-    y: ALTURA_CANVAS - 100,
-    largura: 40, // Será atualizado após carregar imagem
-    altura: 60, // Será atualizado após carregar imagem
+    y: ALTURA_CANVAS - 100, // Será ajustado após carregar assets
+    largura: 32, // Placeholder, será atualizado
+    altura: 48, // Placeholder, será atualizado
     velX: 0,
     velY: 0,
     pulando: false,
@@ -142,10 +151,13 @@ async function carregarPerguntas() {
         if (!Array.isArray(perguntas) || perguntas.length === 0) {
             console.error("Arquivo de perguntas está vazio ou em formato inválido.");
             alert("Erro: Formato inválido do arquivo de perguntas.");
+            return false; // Indica falha
         }
+        return true; // Indica sucesso
     } catch (error) {
         console.error('Falha ao carregar ou processar perguntas:', error);
         alert("Erro crítico ao carregar as perguntas do jogo. Verifique o console (F12).");
+        return false; // Indica falha
     }
 }
 
@@ -165,11 +177,19 @@ async function carregarInstrucoes() {
 }
 
 async function configurarJogo() {
+    console.log("Configurando jogo v1.3...");
     tituloJogoEl.src = 'assets/images/titulo.png';
     tituloJogoEl.alt = 'SUPER VITRU WORLD';
+
     await carregarAssets();
-    await carregarPerguntas(); // Espera perguntas carregarem também
+    const perguntasOk = await carregarPerguntas();
     carregarInstrucoes();
+
+    if (erroAssets || !perguntasOk) {
+        console.error("Configuração falhou devido a erro nos assets ou perguntas.");
+        alert("Não foi possível configurar o jogo devido a erros. Verifique o console (F12).");
+        return; // Impede a configuração dos botões e listeners
+    }
 
     btnIniciar.addEventListener('click', () => mudarTela('tela-jogo'));
     btnInstrucoes.addEventListener('click', () => mudarTela('tela-instrucoes'));
@@ -186,24 +206,23 @@ async function configurarJogo() {
         });
     }
 
-    // --- DEBUG MOVIMENTO: Adicionando logs para teclas --- 
     window.addEventListener('keydown', (e) => {
-        console.log("Key down:", e.key);
+        // console.log("Key down:", e.key);
         teclasPressionadas[e.key] = true;
     });
     window.addEventListener('keyup', (e) => {
-        console.log("Key up:", e.key);
+        // console.log("Key up:", e.key);
         teclasPressionadas[e.key] = false;
     });
-    // --- FIM DEBUG MOVIMENTO ---
 
-    console.log('Jogo configurado.');
+    console.log('Jogo configurado com sucesso.');
 }
 
 function iniciarJogo() {
-    if (!assetsCarregados) {
-        console.warn("Assets ainda não carregados, aguardando...");
-        setTimeout(iniciarJogo, 100);
+    if (!assetsCarregados || erroAssets) {
+        console.error("Tentando iniciar jogo com erro nos assets ou sem carregá-los.");
+        alert("Erro: Não foi possível carregar os recursos visuais do jogo.");
+        mudarTela('tela-inicial');
         return;
     }
     if (!Array.isArray(perguntas) || perguntas.length === 0) {
@@ -224,6 +243,7 @@ function iniciarJogo() {
     ctx.imageSmoothingEnabled = false; // Garante pixel art nítido
 
     if (gameLoopId) cancelAnimationFrame(gameLoopId);
+    console.log("Iniciando Game Loop...");
     gameLoop();
 }
 
@@ -238,10 +258,10 @@ function pararJogo() {
     console.log('Jogo parado.');
 }
 
-function tocarSom(som) {
-    som.currentTime = 0;
-    som.play().catch(e => console.warn("Erro ao tocar som (necessita interação do usuário?):", e));
-}
+// function tocarSom(som) { // Sons removidos
+//     som.currentTime = 0;
+//     som.play().catch(e => console.warn("Erro ao tocar som:", e));
+// }
 
 function atualizarHUD() {
     contadorMoedasEl.textContent = moedasColetadas;
@@ -253,8 +273,7 @@ function resetarVariaveisJogo() {
     moedasColetadas = 0;
     perguntaAtual = 1;
     jogador.x = 100;
-    // Recalcula Y inicial baseado na altura carregada da imagem
-    jogador.y = ALTURA_CANVAS - jogador.altura - 40 - 10; // 40 (chão) + 10 (margem)
+    jogador.y = ALTURA_CANVAS - jogador.altura - 40 - 10; // Y inicial baseado na altura carregada
     jogador.velX = 0;
     jogador.velY = 0;
     jogador.pulando = false;
@@ -271,8 +290,8 @@ function popularMoedas() {
         console.error("Imagem da moeda não carregada para popularMoedas");
         return;
     }
-    const larguraMoeda = imgMoeda.width;
-    const alturaMoeda = imgMoeda.height;
+    const larguraMoeda = imgMoeda.naturalWidth;
+    const alturaMoeda = imgMoeda.naturalHeight;
     plataformas.forEach((plat, index) => {
         if (index > 0) { // Não no chão principal
             moedas.push({ x: plat.x + plat.largura / 2 - larguraMoeda / 2, y: plat.y - alturaMoeda - 10, largura: larguraMoeda, altura: alturaMoeda, coletada: false });
@@ -282,7 +301,7 @@ function popularMoedas() {
     moedas.push({ x: 150, y: ALTURA_CANVAS - 40 - alturaMoeda - 10, largura: larguraMoeda, altura: alturaMoeda, coletada: false });
     moedas.push({ x: 400, y: ALTURA_CANVAS - 40 - alturaMoeda - 10, largura: larguraMoeda, altura: alturaMoeda, coletada: false });
     moedas.push({ x: 700, y: ALTURA_CANVAS - 40 - alturaMoeda - 10, largura: larguraMoeda, altura: alturaMoeda, coletada: false });
-    console.log("Moedas populadas:", moedas);
+    console.log("Moedas populadas:", moedas.length);
 }
 
 function resetarJogo() {
@@ -294,21 +313,19 @@ function resetarJogo() {
 // --- Funções do Game Loop ---
 
 function atualizarPosicaoJogador() {
-    if (jogoPausado || !assetsCarregados) return;
+    if (jogoPausado || !assetsCarregados || erroAssets) return;
 
-    // --- DEBUG MOVIMENTO: Verificando teclas e velocidade --- 
-    console.log("Teclas pressionadas no loop:", JSON.stringify(teclasPressionadas));
-    
-    // Movimento Horizontal
-    jogador.velX = 0;
+    // --- DEBUG MOVIMENTO --- 
+    let velXAnterior = jogador.velX;
+    jogador.velX = 0; // Reseta a velocidade X a cada frame
+
     if (teclasPressionadas['ArrowLeft']) {
-        console.log("Aplicando velocidade para ESQUERDA");
         jogador.velX = -VELOCIDADE_JOGADOR;
+        // console.log("<- Esquerda pressionada, velX:", jogador.velX);
     } else if (teclasPressionadas['ArrowRight']) {
-        console.log("Aplicando velocidade para DIREITA");
         jogador.velX = VELOCIDADE_JOGADOR;
+        // console.log("-> Direita pressionada, velX:", jogador.velX);
     }
-    console.log("Velocidade X definida:", jogador.velX);
     // --- FIM DEBUG MOVIMENTO ---
 
     // Pulo
@@ -316,78 +333,108 @@ function atualizarPosicaoJogador() {
         jogador.velY = FORCA_PULO;
         jogador.pulando = true;
         jogador.noChao = false;
-        tocarSom(sndPulo);
+        console.log("PULO! velY:", jogador.velY);
+        // tocarSom(sndPulo); // Som removido
     }
 
     // Aplicar Gravidade
     jogador.velY += GRAVIDADE;
 
-    // Atualizar Posição
-    jogador.x += jogador.velX;
+    // --- Colisão com Plataformas (Revisado) ---
+    let colidiuX = false;
+    let colidiuY = false;
+
+    // 1. Aplicar movimento Y e checar colisão Y
     jogador.y += jogador.velY;
-    console.log(`Nova posição X: ${jogador.x.toFixed(2)}, Y: ${jogador.y.toFixed(2)}, VelY: ${jogador.velY.toFixed(2)}`);
-
-    // Colisão com limites do canvas (esquerda/direita)
-    if (jogador.x < 0) jogador.x = 0;
-    if (jogador.x + jogador.largura > LARGURA_CANVAS) jogador.x = LARGURA_CANVAS - jogador.largura;
-
-    // Colisão com plataformas
     jogador.noChao = false;
+
     plataformas.forEach(plat => {
-        // Detecção de colisão AABB
         if (jogador.x < plat.x + plat.largura &&
             jogador.x + jogador.largura > plat.x &&
             jogador.y < plat.y + plat.altura &&
             jogador.y + jogador.altura > plat.y) {
 
+            // Colidiu!
             const prevYBottom = jogador.y + jogador.altura - jogador.velY;
 
             // Colisão por cima (aterrissando)
-            if (jogador.velY >= 0 && prevYBottom <= plat.y + 1) { // +1 para margem
+            if (jogador.velY >= 0 && prevYBottom <= plat.y + 1) {
                 jogador.y = plat.y - jogador.altura;
                 jogador.velY = 0;
                 jogador.pulando = false;
                 jogador.noChao = true;
-                console.log("Colidiu com chão/plataforma por cima");
+                colidiuY = true;
+                // console.log("Colidiu Y (cima)");
             }
             // Colisão por baixo (batendo a cabeça)
-            else if (jogador.velY < 0 && jogador.y - jogador.velY >= plat.y + plat.altura) {
+            else if (jogador.velY < 0 && jogador.y - jogador.velY >= plat.y + plat.altura -1) {
                  jogador.y = plat.y + plat.altura;
                  jogador.velY = 0;
-                 console.log("Colidiu com plataforma por baixo");
-            }
-            // Colisão lateral (simplificada)
-            else if (jogador.velX !== 0 && (jogador.y + jogador.altura) > plat.y + 5) { // Evita grudar na lateral ao pular perto
-                 if(jogador.velX > 0 && jogador.x + jogador.largura - jogador.velX <= plat.x){
-                    jogador.x = plat.x - jogador.largura;
-                    console.log("Colidiu com plataforma pela esquerda");
-                 }
-                 else if(jogador.velX < 0 && jogador.x - jogador.velX >= plat.x + plat.largura){
-                    jogador.x = plat.x + plat.largura;
-                    console.log("Colidiu com plataforma pela direita");
-                 }
-                 jogador.velX = 0;
+                 colidiuY = true;
+                 // console.log("Colidiu Y (baixo)");
             }
         }
     });
 
+    // 2. Aplicar movimento X e checar colisão X
+    jogador.x += jogador.velX;
+
+    plataformas.forEach(plat => {
+        if (jogador.x < plat.x + plat.largura &&
+            jogador.x + jogador.largura > plat.x &&
+            jogador.y < plat.y + plat.altura && // Verifica Y novamente após ajuste
+            jogador.y + jogador.altura > plat.y) {
+
+            // Verifica se a colisão Y já foi resolvida para evitar conflitos
+            // E se a colisão é primariamente lateral
+            if (!colidiuY && jogador.velX !== 0) {
+                 console.log(`DEBUG COLISÃO X: velX=${jogador.velX}, jogador.x=${jogador.x.toFixed(1)}, plat.x=${plat.x}, plat.largura=${plat.largura}`);
+                 // Colidindo pela direita da plataforma
+                 if (jogador.velX < 0 && jogador.x <= plat.x + plat.largura && jogador.x + jogador.velX > plat.x + plat.largura) {
+                     console.log("-> Colidiu X (direita da plat)");
+                     jogador.x = plat.x + plat.largura;
+                     colidiuX = true;
+                 }
+                 // Colidindo pela esquerda da plataforma
+                 else if (jogador.velX > 0 && jogador.x + jogador.largura >= plat.x && jogador.x + jogador.largura - jogador.velX < plat.x) {
+                     console.log("<- Colidiu X (esquerda da plat)");
+                     jogador.x = plat.x - jogador.largura;
+                     colidiuX = true;
+                 }
+            }
+        }
+    });
+
+    if (colidiuX) {
+        jogador.velX = 0; // Para o movimento horizontal se colidiu lateralmente
+    }
+    // --- Fim Colisão Revisada ---
+
+    // Colisão com limites do canvas (esquerda/direita)
+    if (jogador.x < 0) {
+        jogador.x = 0;
+        if (jogador.velX < 0) jogador.velX = 0;
+    }
+    if (jogador.x + jogador.largura > LARGURA_CANVAS) {
+        jogador.x = LARGURA_CANVAS - jogador.largura;
+        if (jogador.velX > 0) jogador.velX = 0;
+    }
+
     // Caiu para fora da tela?
-    if (jogador.y > ALTURA_CANVAS + jogador.altura) { // Adiciona altura para garantir que saiu
+    if (jogador.y > ALTURA_CANVAS + jogador.altura) {
         console.log("Jogador caiu!");
-        // Implementar lógica de Game Over ou reset de posição aqui
-        // Por enquanto, apenas reseta a posição:
         jogador.x = 100;
         jogador.y = ALTURA_CANVAS - jogador.altura - 50;
         jogador.velY = 0;
-        jogador.noChao = true; // Assume que voltou para uma posição segura
+        jogador.noChao = true;
     }
+    // console.log(`Pos Final: X=${jogador.x.toFixed(1)}, Y=${jogador.y.toFixed(1)}, velX=${jogador.velX}, velY=${jogador.velY.toFixed(1)}, noChao=${jogador.noChao}`);
 }
 
 function verificarColetaMoedas() {
-    if (jogoPausado || !assetsCarregados) return;
-    moedas.forEach((moeda, index) => {
+    if (jogoPausado || !assetsCarregados || erroAssets) return;
+    moedas.forEach((moeda) => {
         if (!moeda.coletada) {
-            // Detecção de colisão AABB
             if (jogador.x < moeda.x + moeda.largura &&
                 jogador.x + jogador.largura > moeda.x &&
                 jogador.y < moeda.y + moeda.altura &&
@@ -396,7 +443,7 @@ function verificarColetaMoedas() {
                 moeda.coletada = true;
                 moedasColetadas++;
                 atualizarHUD();
-                tocarSom(sndMoeda);
+                // tocarSom(sndMoeda); // Som removido
                 console.log(`Moeda coletada! Total: ${moedasColetadas}`);
                 verificarCondicaoPergunta();
             }
@@ -425,6 +472,7 @@ function mostrarPergunta() {
     if (!Array.isArray(perguntas) || perguntas.length === 0 || perguntaAtual > perguntas.length) return;
 
     jogoPausado = true;
+    console.log("Jogo PAUSADO para pergunta.");
     const perguntaInfo = perguntas[perguntaAtual - 1];
 
     textoPerguntaEl.textContent = perguntaInfo.pergunta;
@@ -460,7 +508,7 @@ function verificarResposta(indiceSelecionado) {
 
     if (correta) {
         console.log(`Pergunta ${perguntaAtual}: Resposta Correta!`);
-        tocarSom(sndAcerto);
+        // tocarSom(sndAcerto); // Som removido
         perguntaAtual++;
         if (perguntaAtual > perguntas.length) {
             console.log("Todas as perguntas respondidas!");
@@ -470,20 +518,27 @@ function verificarResposta(indiceSelecionado) {
         }
     } else {
         console.log(`Pergunta ${perguntaAtual}: Resposta Incorreta!`);
-        tocarSom(sndErro);
+        // tocarSom(sndErro); // Som removido
         moedasColetadas = 0;
-        // Resetar moedas visuais
         moedas.forEach(m => m.coletada = false);
         atualizarHUD();
     }
 
     caixaPerguntaEl.classList.add('hidden');
     jogoPausado = false;
+    console.log("Jogo DESPAUSADO.");
 }
 
 function desenhar() {
-    if (!assetsCarregados) {
-        console.warn("Tentando desenhar antes dos assets carregarem");
+    if (!assetsCarregados || erroAssets) {
+        // console.warn("Tentando desenhar antes dos assets carregarem ou com erro.");
+        // Desenha um fundo de erro se assets falharam
+        ctx.fillStyle = 'darkred';
+        ctx.fillRect(0, 0, LARGURA_CANVAS, ALTURA_CANVAS);
+        ctx.fillStyle = 'white';
+        ctx.font = '20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("Erro ao carregar assets! Verifique o console (F12).", LARGURA_CANVAS / 2, ALTURA_CANVAS / 2);
         return;
     }
 
@@ -497,7 +552,7 @@ function desenhar() {
     // Desenhar plataformas
     plataformas.forEach(plat => {
         if (plat.tile && imgPlataforma.complete && imgPlataforma.naturalHeight !== 0) {
-            const tileWidth = imgPlataforma.width;
+            const tileWidth = imgPlataforma.naturalWidth;
             const numTiles = Math.ceil(plat.largura / tileWidth);
             for (let i = 0; i < numTiles; i++) {
                 ctx.drawImage(imgPlataforma, plat.x + i * tileWidth, plat.y, tileWidth, plat.altura);
@@ -515,30 +570,28 @@ function desenhar() {
         }
     });
 
-    // Desenhar jogador
+    // Desenhar jogador (com save/restore e verificação)
     if (imgPersonagem.complete && imgPersonagem.naturalHeight !== 0) {
-        // --- DEBUG VISUAL: Tentando desenhar sem largura/altura explícita --- 
+        ctx.save(); // Salva o estado atual do canvas
         try {
-             // ctx.drawImage(imgPersonagem, jogador.x, jogador.y, jogador.largura, jogador.altura);
-             ctx.drawImage(imgPersonagem, Math.round(jogador.x), Math.round(jogador.y)); // Desenha no tamanho original
-             // console.log(`Desenhando personagem em ${jogador.x.toFixed(1)}, ${jogador.y.toFixed(1)}`);
+            // ctx.globalAlpha = 0.5; // Exemplo de como save/restore isola
+            ctx.drawImage(imgPersonagem, Math.round(jogador.x), Math.round(jogador.y)); // Desenha no tamanho original
         } catch (e) {
-            console.error("Erro ao desenhar imagem do personagem:", e, imgPersonagem.src);
-            // Fallback se drawImage falhar
-            ctx.fillStyle = 'red'; // Desenha um quadrado vermelho se a imagem falhar
+            console.error("Erro CRÍTICO no ctx.drawImage do personagem:", e);
+            // Fallback visual se drawImage falhar
+            ctx.fillStyle = 'magenta';
             ctx.fillRect(jogador.x, jogador.y, jogador.largura, jogador.altura);
         }
-        // --- FIM DEBUG VISUAL ---
+        ctx.restore(); // Restaura o estado anterior do canvas
     } else {
         // Fallback se imagem não carregou ou está quebrada
-        ctx.fillStyle = '#333';
+        ctx.fillStyle = '#333'; // Cinza escuro
         ctx.fillRect(jogador.x, jogador.y, jogador.largura, jogador.altura);
-        if (!imgPersonagem.complete) console.warn("Imagem do personagem ainda não completa no momento do desenho.");
-        if (imgPersonagem.naturalHeight === 0) console.warn("Imagem do personagem parece quebrada (altura 0).");
+        // console.warn("Desenhando fallback do jogador - imagem não pronta?");
     }
 }
 
-// --- Animação Balões ---
+// --- Animação Balões (Mantida) ---
 let animacaoBaloesId = null;
 
 function criarBalao() {
@@ -570,7 +623,10 @@ function pararAnimacaoBaloes() {
 // --- Fim Animação Balões ---
 
 function gameLoop() {
-    if (!jogoRodando) return;
+    if (!jogoRodando) {
+        // console.log("Game loop parado.");
+        return;
+    }
 
     atualizarPosicaoJogador();
     verificarColetaMoedas();
@@ -581,4 +637,5 @@ function gameLoop() {
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', configurarJogo);
+console.log("Script v1.3 carregado. Aguardando DOMContentLoaded...");
 
