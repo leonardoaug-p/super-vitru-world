@@ -60,8 +60,8 @@ function carregarAssets() {
         console.log("Assets visuais carregados!");
         assetsCarregados = true;
         // Ajustar tamanho do jogador baseado na imagem carregada
-        jogador.largura = imgPersonagem.width * 1.5; // Ajustar escala se necessário
-        jogador.altura = imgPersonagem.height * 1.5;
+        jogador.largura = imgPersonagem.width; // Ajustar escala se necessário (removido temporariamente)
+        jogador.altura = imgPersonagem.height;
     }).catch(err => {
         console.error("Erro ao carregar assets visuais:", err);
         alert("Erro ao carregar imagens do jogo. Tente recarregar.");
