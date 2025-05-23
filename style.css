@@ -1,0 +1,226 @@
+/* Estilos para SUPER VITRU WORLD */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Press Start 2P', cursive; /* Fonte Pixelada */
+    overflow: hidden;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    image-rendering: pixelated; /* Mantém os pixels nítidos */
+}
+
+/* Importa a fonte do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.tela {
+    display: none;
+    width: 800px;
+    height: 600px;
+    background-color: #222; /* Fundo escuro padrão */
+    border: 5px solid #555;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+.tela.ativa {
+    display: flex;
+}
+
+/* Marca d'água */
+.marca-dagua {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 60px; /* Tamanho pequeno */
+    height: auto;
+    opacity: 0.7; /* Leve transparência */
+    z-index: 50; /* Garante que fique visível */
+}
+
+#tela-inicial {
+    background-color: #1a1a2e; /* Azul escuro espacial */
+}
+
+#tela-inicial #titulo-jogo {
+    max-width: 80%;
+    margin-bottom: 40px;
+    image-rendering: pixelated;
+}
+
+#menu-principal button {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    background-color: #e94560;
+    color: #fff;
+    border: 3px solid #fff;
+    border-radius: 5px;
+    text-shadow: 2px 2px #000;
+    transition: background-color 0.2s ease;
+}
+
+#menu-principal button:hover {
+    background-color: #f05f78;
+}
+
+#tela-jogo {
+    background-color: #87CEEB; /* Cor do céu */
+    justify-content: flex-start;
+    align-items: stretch;
+    border-color: #fff;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: calc(100% - 40px);
+    background-color: transparent;
+    image-rendering: pixelated;
+}
+
+#info-jogo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    font-size: 1.2em;
+    font-family: 'Press Start 2P', cursive;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-shadow: 1px 1px #000;
+    z-index: 10;
+}
+
+#caixa-pergunta {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    border-radius: 10px;
+    border: 4px solid #fff;
+    width: 75%;
+    z-index: 20;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#caixa-pergunta.hidden {
+    display: none;
+}
+
+#caixa-pergunta h3 {
+    margin-bottom: 25px;
+    font-size: 1.3em;
+    line-height: 1.5;
+}
+
+#opcoes-resposta button {
+    display: block;
+    width: 90%;
+    margin: 12px auto;
+    padding: 12px;
+    font-size: 1.1em;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+#opcoes-resposta button:hover {
+    background-color: #66BB6A;
+}
+
+#tela-instrucoes, #tela-creditos, #tela-parabens {
+    background-color: #333;
+}
+
+#tela-instrucoes h2, #tela-creditos h2, #tela-parabens h2 {
+    margin-bottom: 30px;
+    font-size: 2em;
+    color: #e94560;
+    text-shadow: 2px 2px #000;
+}
+
+#tela-instrucoes p, #tela-creditos p, #tela-parabens p {
+    max-width: 85%;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    font-size: 1em;
+}
+
+.btn-voltar, #btn-jogar-novamente {
+    padding: 12px 25px;
+    font-size: 1.2em;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    background-color: #5bc0de; /* Azul claro */
+    color: #fff;
+    border: 3px solid #fff;
+    border-radius: 5px;
+    text-shadow: 2px 2px #000;
+    transition: background-color 0.2s ease;
+}
+
+.btn-voltar:hover, #btn-jogar-novamente:hover {
+    background-color: #76cce6;
+}
+
+/* Animação Balões */
+.balao {
+    width: 50px;
+    height: 70px;
+    background-color: red; /* Cor base, será sobrescrita */
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    bottom: -100px; /* Começa fora da tela */
+    animation: subir linear infinite;
+    opacity: 0.9;
+}
+
+.balao::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 10px;
+    background-color: inherit; /* Mesma cor do balão */
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+@keyframes subir {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.9;
+    }
+    90% {
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(-750px) rotate(15deg); /* Sobe e inclina um pouco */
+        opacity: 0;
+    }
+}
+
+

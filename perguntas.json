@@ -1,0 +1,72 @@
+[
+  {
+    "pergunta": "Problematização",
+    "opcoes": [
+      "Apresentação de um problema ou situação que gera curiosidade e motiva a busca por respostas.",
+      "Avaliação final do conhecimento adquirido durante o projeto.",
+      "Aplicação prática de conceitos em um ambiente controlado."
+    ],
+    "correta": 0,
+    "moedas_necessarias": 1
+  },
+  {
+    "pergunta": "Significação",
+    "opcoes": [
+      "Exploração do problema, buscando compreender o seu significado e relevância.",
+      "Coleta de dados brutos sem análise prévia.",
+      "Definição de objetivos e metas para a próxima etapa."
+    ],
+    "correta": 0,
+    "moedas_necessarias": 2
+  },
+  {
+    "pergunta": "Experimentação",
+    "opcoes": [
+      "Vivência prática do conteúdo, por meio de atividades e experiências que permitem a aplicação do conhecimento.",
+      "Leitura teórica aprofundada sobre o tema central.",
+      "Discussão em grupo sobre hipóteses levantadas."
+    ],
+    "correta": 0,
+    "moedas_necessarias": 3
+  },
+  {
+    "pergunta": "Reflexão",
+    "opcoes": [
+      "Análise crítica da experiência, identificando o que foi aprendido e o que pode ser aprimorado.",
+      "Execução de tarefas repetitivas para memorização.",
+      "Apresentação dos resultados finais para uma audiência."
+    ],
+    "correta": 0,
+    "moedas_necessarias": 4
+  },
+  {
+    "pergunta": "Conceitualização",
+    "opcoes": [
+      "Organização do conhecimento, buscando identificar as relações entre os conceitos e as informações.",
+      "Brainstorming de novas ideias sem conexão com o tema.",
+      "Teste de usabilidade de uma ferramenta ou protótipo."
+    ],
+    "correta": 0,
+    "moedas_necessarias": 5
+  },
+  {
+    "pergunta": "Ação",
+    "opcoes": [
+      "Aplicação do conhecimento em situações reais, por meio de projetos e atividades que permitem a demonstração da aprendizagem.",
+      "Revisão da literatura existente sobre o assunto.",
+      "Criação de um mapa mental com os principais tópicos."
+    ],
+    "correta": 0,
+    "moedas_necessarias": 6
+  },
+  {
+    "pergunta": "Avaliação",
+    "opcoes": [
+      "Reflexão sobre o processo de aprendizagem, buscando identificar o que foi aprendido e o que pode ser aprimorado.",
+      "Introdução de um novo problema para iniciar o ciclo novamente.",
+      "Escolha das ferramentas a serem utilizadas no projeto."
+    ],
+    "correta": 0,
+    "moedas_necessarias": 7
+  }
+]

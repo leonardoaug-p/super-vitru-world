@@ -1,0 +1,20 @@
+Bem-vindo ao SUPER VITRU WORLD!
+
+Objetivo: Ajude nosso herói a navegar pelo mundo, coletar moedas e responder corretamente às perguntas sobre as etapas da aprendizagem para vencer!
+
+Controles:
+*   Seta para Esquerda: Mover para a esquerda.
+*   Seta para Direita: Mover para a direita.
+*   Seta para Cima: Pular.
+*   Seta para Baixo: Abaixar (se aplicável).
+
+Como Jogar:
+1.  Movimente-se pelo cenário e colete as moedas brilhantes.
+2.  Cada pergunta requer um número específico de moedas para ser ativada (1 moeda para a primeira, 2 para a segunda, e assim por diante).
+3.  Ao coletar moedas suficientes, uma pergunta aparecerá.
+4.  Escolha a resposta que você acredita ser a correta.
+5.  Se acertar: Parabéns! Você poderá continuar coletando moedas para a próxima pergunta.
+6.  Se errar: Oh não! Suas moedas para essa pergunta serão zeradas. Você precisará coletar a quantidade necessária novamente para tentar responder à *mesma* pergunta.
+7.  Responda todas as 7 perguntas corretamente para completar o jogo!
+
+Boa sorte e divirta-se aprendendo!

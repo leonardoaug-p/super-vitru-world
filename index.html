@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUPER VITRU WORLD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="tela-inicial" class="tela ativa">
+        <img id="titulo-jogo" src="" alt="SUPER VITRU WORLD">
+        <div id="menu-principal">
+            <button id="btn-iniciar">INICIAR</button>
+            <button id="btn-instrucoes">INSTRUÇÕES</button>
+            <button id="btn-creditos">CRÉDITOS</button>
+        </div>
+    </div>
+
+    <div id="tela-jogo" class="tela">
+        <!-- Conteúdo do jogo (canvas, personagem, moedas, etc.) será adicionado aqui -->
+        <canvas id="gameCanvas"></canvas>
+        <div id="info-jogo">
+            <span>Moedas: <span id="contador-moedas">0</span></span>
+            <span>Pergunta: <span id="numero-pergunta">1</span> / 7</span>
+        </div>
+        <div id="caixa-pergunta" class="hidden">
+            <h3 id="texto-pergunta">Pergunta?</h3>
+            <div id="opcoes-resposta">
+                <button class="opcao"></button>
+                <button class="opcao"></button>
+                <button class="opcao"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tela-instrucoes" class="tela">
+        <h2>Instruções</h2>
+        <p id="texto-instrucoes">
+            <!-- Texto das instruções será carregado aqui -->
+        </p>
+        <button class="btn-voltar">Voltar</button>
+    </div>
+
+    <div id="tela-creditos" class="tela">
+        <h2>Créditos</h2>
+        <p>
+            Desenvolvido por Design Educacional - Edtech<br>
+            Cleber Rafael Lopes Lisboa<br>
+            Daniele Bellese dos Santos<br>
+            Guilherme Gomes Leal Clauman<br>
+            Leonardo Augusto de Araujo Pereira
+        </p>
+        <button class="btn-voltar">Voltar</button>
+    </div>
+
+    <div id="tela-parabens" class="tela">
+        <h2>Parabéns!</h2>
+        <p>Você respondeu todas as perguntas!</p>
+        <!-- Animação de balões será adicionada aqui -->
+        <button id="btn-jogar-novamente">Jogar Novamente</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
